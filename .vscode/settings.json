@@ -1,0 +1,9 @@
+{
+    "editor.formatOnSave": true,
+    "triggerTaskOnSave.on": true,
+    "triggerTaskOnSave.tasks": {
+        "tcr": [
+            "**/*.rego"
+        ]
+    }
+}

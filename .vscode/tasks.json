@@ -1,0 +1,26 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "test",
+            "command": "make test",
+            "type": "shell",
+            "args": [],
+            "group": "build"
+        },
+        {
+            "label": "format",
+            "command": "make fmt",
+            "type": "shell",
+            "args": [],
+            "group": "build"
+        },
+        {
+            "label": "tcr",
+            "command": "make fmt test && git commit -am working || git reset --hard",
+            "type": "shell",
+            "args": [],
+            "group": "build"
+        }
+    ]
+}
