@@ -2,6 +2,10 @@ package policy.release.attestation_task_bundle
 
 import data.lib
 
+deny := ((deny_tasks_defined_in_bundle | deny_task_ref_bundles_not_empty) | deny_task_ref_bundles_acceptable) | deny_acceptable_bundles_provided
+
+warn := warn_task_ref_bundles_current | warn_task_ref_bundles_pinned
+
 mock_data(task) = d {
 	d := [{"predicate": {
 		"buildConfig": {"tasks": [task]},
@@ -134,6 +138,13 @@ test_acceptable_bundles_provided {
 		"msg": "Missing required task-bundles data",
 	}}
 	lib.assert_equal(expected, deny) with data["task-bundles"] as []
+}
+
+test_exception {
+	lib.assert_equal({["tasks_defined_in_bundle", "task_ref_bundles_not_empty", "task_ref_bundles_acceptable", "acceptable_bundles_provided", "task_ref_bundles_current", "task_ref_bundles_pinned"]}, exception)
+
+	attestations := mock_attestation(["reg.com/repo@sha256:def"])
+	lib.assert_equal(set(), exception) with input.attestations as attestations
 }
 
 mock_attestation(bundles) = a {

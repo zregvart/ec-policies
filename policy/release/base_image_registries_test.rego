@@ -2,6 +2,8 @@ package policy.release.base_image_registries
 
 import data.lib
 
+deny := (deny_base_image_permitted | deny_base_image_info_found) | deny_allowed_registries_provided
+
 mock_bundle := "registry.img/spam@sha256:4e388ab32b10dc8dbc7e28144f552830adc74787c1e2c0824032078a79f227fb"
 
 test_acceptable_base_images {
@@ -81,4 +83,11 @@ test_allowed_registries_provided {
 		"msg": "Missing required allowed_registry_prefixes rule data",
 	}}
 	lib.assert_equal(expected, deny) with data.rule_data as {}
+}
+
+test_exception {
+	lib.assert_equal({["base_image_permitted", "base_image_info_found", "allowed_registries_provided"]}, exception)
+
+	attestations := lib.att_mock_task_helper({})
+	lib.assert_equal(set(), exception) with input.attestations as attestations
 }

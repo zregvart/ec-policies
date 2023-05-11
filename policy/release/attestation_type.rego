@@ -11,6 +11,11 @@ import future.keywords.in
 
 import data.lib
 
+exception contains rules if {
+	count(lib.pipelinerun_attestations) == 0
+	rules := ["known_attestation_type"]
+}
+
 # METADATA
 # title: Known attestation type found
 # description: >-
@@ -25,7 +30,7 @@ import data.lib
 #   collections:
 #   - minimal
 #
-deny contains result if {
+deny_known_attestation_type contains result if {
 	some att in lib.pipelinerun_attestations
 	att_type := att._type
 	not att_type in lib.rule_data("known_attestation_types")
@@ -44,7 +49,7 @@ deny contains result if {
 #   collections:
 #   - minimal
 #
-deny contains result if {
+deny_pipelinerun_attestation_found contains result if {
 	count(lib.pipelinerun_attestations) == 0
 	result := lib.result_helper(rego.metadata.chain(), [])
 }

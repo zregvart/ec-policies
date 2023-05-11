@@ -13,6 +13,12 @@ import future.keywords.in
 
 import data.lib
 
+exception contains rules if {
+	count(lib.pipelinerun_attestations) == 0
+
+	rules = ["base_image_permitted", "base_image_info_found", "allowed_registries_provided"]
+}
+
 # METADATA
 # title: Base image comes from permitted registry
 # description: >-
@@ -30,7 +36,7 @@ import data.lib
 #   collections:
 #   - minimal
 #
-deny contains result if {
+deny_base_image_permitted contains result if {
 	some image_ref in _base_images
 	not _image_ref_permitted(image_ref, lib.rule_data("allowed_registry_prefixes"))
 	result := lib.result_helper(rego.metadata.chain(), [image_ref])
@@ -50,7 +56,7 @@ deny contains result if {
 #   collections:
 #   - minimal
 #
-deny contains result if {
+deny_base_image_info_found contains result if {
 	count(lib.pipelinerun_attestations) > 0
 
 	# Some images are built "from scratch" and do not have any base images, e.g. UBI.
@@ -74,7 +80,7 @@ deny contains result if {
 #   collections:
 #   - minimal
 #
-deny contains result if {
+deny_allowed_registries_provided contains result if {
 	count(lib.rule_data("allowed_registry_prefixes")) == 0
 	result := lib.result_helper(rego.metadata.chain(), [])
 }

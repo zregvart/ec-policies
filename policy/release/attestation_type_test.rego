@@ -2,6 +2,8 @@ package policy.release.attestation_type
 
 import data.lib
 
+deny = deny_known_attestation_type | deny_pipelinerun_attestation_found
+
 good_type := "https://in-toto.io/Statement/v0.1"
 
 bad_type := "https://in-toto.io/Statement/v0.0.9999999"
@@ -42,4 +44,10 @@ test_deny_when_pipelinerun_attestation_founds {
 		},
 	]
 	lib.assert_equal(deny, expected) with input.attestations as attestations
+}
+
+test_exception {
+	lib.assert_equal({["known_attestation_type"]}, exception)
+
+	lib.assert_equal(set(), exception) with input.attestations as mock_data(good_type)
 }
