@@ -214,6 +214,26 @@ deny contains result if {
 	result := lib.result_helper(rego.metadata.chain(), [error])
 }
 
+# METADATA
+# title: Valid Clair report
+# description: >-
+#   Check the attached Clair report has the expected format.
+# custom:
+#   short_name: clair_report_syntax
+#   failure_msg: 'Clair report does not have expecte syntax: %s'
+#   solution: >-
+#     Make sure the build process produces and attaches a valid Clair
+#     vulnerability report.
+#   collections:
+#   - minimal
+#   - redhat
+#
+deny contains result if {
+	some violation in json.match_schema(_clair_report, _clair_schema)[1]
+	error := violation.error
+	result := lib.result_helper(rego.metadata.chain(), [error])
+}
+
 # extracts the clair report attached to the image
 _clair_report := report if {
 	input_image := image.parse(input.image.ref)
